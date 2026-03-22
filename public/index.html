@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIS PRO | Industrial Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --red: #ff4d4d; --green: #2ecc71; --bg: #f8fafc; 
+            --accent: #2563eb; --card-bg: #1e293b; --border: rgba(255,255,255,0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lexend', sans-serif; }
+        body { background: var(--bg); color: #334155; overflow-x: hidden; min-height: 100vh; }
+        
+        /* Premium Header */
+        header { 
+            background: var(--accent); padding: 0.8rem 2rem; 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+            color: white;
+        }
+        .logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -1px; display: flex; align-items: center; }
+        .logo span { background: white; color: var(--accent); padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-size: 0.75rem; }
+
+        /* Minimalist Hamburger Button */
+        .hamburger { 
+            display: none; width: 30px; height: 20px; 
+            flex-direction: column; justify-content: space-between; cursor: pointer; z-index: 1001;
+        }
+        .hamburger span { width: 100%; height: 2.5px; background: white; border-radius: 10px; transition: 0.4s; }
+
+        /* Navigation Desktop */
+        .category-tabs { display: flex; gap: 0.5rem; }
+        .tab { 
+            padding: 0.5rem 1.2rem; font-size: 0.75rem; font-weight: 600; cursor: pointer; 
+            border-radius: 50px; transition: 0.3s; color: rgba(255,255,255,0.7); 
+            border: 1px solid rgba(255,255,255,0.1); white-space: nowrap;
+        }
+        .tab:hover, .tab.active { background: white; color: var(--accent); border-color: white; }
+
+        /* Mobile View Fix */
+        @media (max-width: 850px) {
+            .hamburger { display: flex; }
+            .category-tabs { 
+                position: fixed; top: 0; right: -100%; width: 260px; height: 100vh; 
+                background: white; flex-direction: column; padding: 80px 20px; 
+                gap: 15px; transition: 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
+                box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 1000;
+            }
+            .category-tabs.open { right: 0; }
+            .category-tabs .tab { color: #1e293b; border: 1px solid #e2e8f0; text-align: center; }
+            .category-tabs .tab.active { background: var(--accent); color: white; }
+            
+            .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); background: #1e293b; }
+            .hamburger.open span:nth-child(2) { opacity: 0; }
+            .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(7px, -8px); background: #1e293b; }
+        }
+
+        /* --- HERO SLIDER (Superior Filling) --- */
+        .hero-section { width: 100%; position: relative; overflow: hidden; height: 400px; background: #000; }
+        .slider-container { display: flex; width: 100%; height: 100%; transition: 0.8s ease-in-out; }
+        .slide { min-width: 100%; height: 100%; position: relative; }
+        .slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        
+        .hero-content { 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center; color: white; width: 90%; z-index: 10;
+        }
+        .hero-content h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .hero-content p { font-size: 1rem; opacity: 0.9; font-weight: 300; letter-spacing: 1px; }
+
+        @media (max-width: 768px) {
+            .hero-section { height: 280px; }
+            .hero-content h1 { font-size: 1.6rem; }
+            .hero-content p { font-size: 0.8rem; }
+        }
+
+        /* --- ACTION CARDS (Premium UI) --- */
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+        .action-bar { 
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; 
+            margin-top: -50px; position: relative; z-index: 20; 
+        }
+        .action-card { 
+            background: var(--card-bg); border-radius: 24px; padding: 2.5rem; 
+            cursor: pointer; transition: 0.4s; text-align: center; color: white;
+            border: 1px solid var(--border); box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        .action-card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 20px 45px rgba(37, 99, 235, 0.3); }
+        .action-icon { font-size: 2.5rem; margin-bottom: 1rem; color: var(--accent); }
+        .action-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .action-desc { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; }
+
+        @media (max-width: 768px) { .action-bar { grid-template-columns: 1fr; margin-top: -30px; } }
+
+        /* Results Grid & Dark Cards */
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; margin-top: 4rem; }
+        .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; position: relative; color: white; border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; }
+        .card.is-hidden { display: none; }
+
+        .loader-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30, 41, 59, 0.95); display: flex; align-items: center; justify-content: center; z-index: 100; }
+        .spinner { width: 45px; height: 45px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .viewport { background: #000; aspect-ratio: 4/3; }
+        .viewport img { width: 100%; height: 100%; object-fit: cover; }
+        .card-content { padding: 1.5rem; }
+        .status-badge { display: inline-block; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 0.8rem; }
+        .status-pass { background: #dcfce7; color: #166534; }
+        .status-fail { background: #fee2e2; color: #991b1b; }
+        .confidence-mini { margin-top: 1.5rem; font-size: 0.75rem; font-weight: 800; color: #60a5fa; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; }
+        
+        #clearBtn { margin: 2rem auto; display: none; background: #fee2e2; color: #991b1b; padding: 0.8rem 2rem; border-radius: 10px; border: none; font-weight: 800; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">FIS <span>PRO</span></div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </div>
+    <div class="category-tabs" id="navTabs">
+        <div class="tab active" data-cat="all" onclick="filterGallery('all')">ALL ASSETS</div>
+        <div class="tab" data-cat="dyeing" onclick="filterGallery('dyeing')">DYEING</div>
+        <div class="tab" data-cat="weaving" onclick="filterGallery('weaving')">WEAVING</div>
+        <div class="tab" data-cat="knitting" onclick="filterGallery('knitting')">KNITTING</div>
+        <div class="tab" data-cat="good" onclick="filterGallery('good')">OPTIMAL (GOOD)</div>
+    </div>
+</header>
+
+<div class="hero-section">
+    <div class="slider-container" id="slider">
+        <div class="slide">
+            <img src="assets/bg1.png" alt="Fabric Pathology Scan">
+            <div class="hero-content">
+                <h1>Autonomous Fabric Pathological Scanner</h1>
+                <p>Non-Destructive Testing (NDT) Approach</p>
+            </div>
+        </div>
+        <div class="slide">
+            <img src="assets/bg2.png" alt="Surface Integrity">
+            <div class="hero-content">
+                <h1>ZERO DEFECT MANUFACTURING</h1>
+                <p>Ensuring 100% Surface Uniformity & Material Integrity</p>
+            </div>
+        </div>
+        <div class="slide">
+            <img src="assets/bg3.png" alt="Textile Audit">
+            <div class="hero-content">
+                <h1>SMART TEXTILE AUDIT</h1>
+                <p>Real-time Detection of Dyeing, Weaving & Knitting Flaws</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="action-bar">
+        <div class="action-card" onclick="alert('Camera integration active in production')">
+            <div class="action-icon">▶</div>
+            <div class="action-title">START LIVE SCANNER</div>
+            <div class="action-desc">Point your industrial camera at material for real-time AI scanning.</div>
+        </div>
+        <div class="action-card" onclick="document.getElementById('fileInput').click()">
+            <div class="action-icon">📂</div>
+            <div class="action-title">BATCH UPLOAD</div>
+            <div class="action-desc">Upload folders or multiple fabric samples for an automated deep audit.</div>
+        </div>
+        <input type="file" id="fileInput" hidden multiple onchange="handleMultipleUploads(this)">
+    </div>
+
+    <div id="resultsGrid" class="results-grid"></div>
+    <div style="text-align:center"><button id="clearBtn" onclick="location.reload()">🗑️ CLEAR ALL RESULTS</button></div>
+</div>
+
+<script>
+    // Slider Logic
+    let slideIdx = 0;
+    const slider = document.getElementById('slider');
+    setInterval(() => {
+        slideIdx = (slideIdx + 1) % 3;
+        slider.style.transform = `translateX(-${slideIdx * 100}%)`;
+    }, 4500);
+
+    let currentCategory = 'all';
+    const resultsGrid = document.getElementById('resultsGrid');
+
+    function toggleMenu() {
+        document.getElementById('navTabs').classList.toggle('open');
+        document.getElementById('hamburger').classList.toggle('open');
+    }
+
+    async function handleMultipleUploads(input) {
+        if (!input.files.length) return;
+        document.getElementById('clearBtn').style.display = 'block';
+        for (const file of input.files) {
+            const cardId = 'card-' + Math.random().toString(36).substr(2, 9);
+            const path = (file.webkitRelativePath || file.name).toLowerCase();
+            let initialCat = "dyeing";
+            if (path.includes('weaving')) initialCat = 'weaving';
+            else if (path.includes('knitting')) initialCat = 'knitting';
+            else if (path.includes('good')) initialCat = 'good';
+
+            createPlaceholder(cardId, file, initialCat);
+            await processFile(file, cardId, initialCat);
+        }
+    }
+
+    function createPlaceholder(id, file, cat) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const html = `<div class="card" id="${id}" data-category="${cat}">
+                <div class="loader-overlay" id="loader-${id}"><div class="spinner"></div></div>
+                <div class="viewport"><img src="${e.target.result}"></div>
+                <div class="card-content">
+                    <div class="status-badge" style="background:rgba(255,255,255,0.1)">SYNCING</div>
+                    <div class="defect-title">AI Processing...</div>
+                    <p style="font-size:0.8rem; color:#94a3b8">Scanning material patterns...</p>
+                </div>
+            </div>`;
+            resultsGrid.insertAdjacentHTML('afterbegin', html);
+            filterGallery(currentCategory);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async function processFile(file, cardId, initialCat) {
+        const fd = new FormData(); fd.append('file', file);
+        try {
+            const res = await fetch('http://127.0.0.1:8000/api/analyze-frame', { method: 'POST', body: fd });
+            const data = await res.json();
+            setTimeout(() => {
+                const card = document.getElementById(cardId);
+                const loader = document.getElementById(`loader-${cardId}`);
+                if(loader) loader.remove();
+                
+                const isPass = data.status === 'PASS';
+                const dTitle = data.defect_type.toLowerCase();
+                const bText = data.briefing.toLowerCase();
+
+                let finalCat = initialCat;
+                if (isPass) finalCat = 'good';
+                else {
+                    if (bText.includes('hole') || dTitle.includes('knitting')) finalCat = 'knitting';
+                    else if (bText.includes('pick') || dTitle.includes('weaving')) finalCat = 'weaving';
+                    else finalCat = 'dyeing';
+                }
+
+                card.setAttribute('data-category', finalCat);
+                card.querySelector('.status-badge').className = `status-badge ${isPass ? 'status-pass' : 'status-fail'}`;
+                card.querySelector('.status-badge').innerText = data.status;
+                card.querySelector('.defect-title').innerText = data.defect_type;
+                card.querySelector('.card-content').insertAdjacentHTML('beforeend', `<div class="confidence-mini"><span>ACCURACY</span><span>${data.accuracy}%</span></div>`);
+                filterGallery(currentCategory);
+            }, 1800);
+        } catch (e) {}
+    }
+
+    function filterGallery(cat) {
+        currentCategory = cat;
+        document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.getAttribute('data-cat') === cat));
+        document.querySelectorAll('.card').forEach(card => {
+            const cardCat = card.getAttribute('data-category');
+            if (cat === 'all' || cardCat === card) card.classList.remove('is-hidden');
+            else if (cardCat === cat) card.classList.remove('is-hidden');
+            else card.classList.add('is-hidden');
+        });
+        if (window.innerWidth < 850 && document.getElementById('hamburger').classList.contains('open')) toggleMenu();
+    }
+</script>
+</body>
+</html>
+
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIS  | Industrial Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --red: #ff4d4d; --green: #2ecc71; --bg: #f8fafc; 
+            --accent: #2563eb; --card-bg: #1e293b; --border: #e2e8f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lexend', sans-serif; }
+        body { background: var(--bg); color: #334155; overflow-x: hidden; min-height: 100vh; }
+        
+        /* Fixed Responsive Header */
+        header { 
+            background: var(--accent); padding: 1rem 2rem; 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+            color: white; flex-wrap: wrap; gap: 15px;
+        }
+        .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -1px; }
+        .logo span { background: white; color: var(--accent); padding: 2px 8px; border-radius: 4px; margin-left: 5px; font-size: 0.8rem; }
+
+        .nav-container { display: flex; align-items: center; }
+        .category-tabs { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 5px; }
+        .category-tabs::-webkit-scrollbar { display: none; } /* Hide scrollbar */
+        
+        .tab { 
+            padding: 0.5rem 1.2rem; font-size: 0.75rem; font-weight: 600; cursor: pointer; 
+            border-radius: 50px; transition: 0.3s; color: rgba(255,255,255,0.7); 
+            border: 1px solid rgba(255,255,255,0.2); white-space: nowrap;
+        }
+        .tab:hover, .tab.active { background: white; color: var(--accent); border-color: white; }
+
+        .container { max-width: 1400px; margin: 2rem auto; padding: 0 1.5rem; }
+        
+        /* Action Bar Responsive */
+        .action-bar { display: flex; gap: 1rem; margin-bottom: 2.5rem; justify-content: center; flex-wrap: wrap; }
+        .btn { 
+            padding: 0.8rem 1.8rem; border: none; border-radius: 10px; font-weight: 800; 
+            font-size: 0.8rem; cursor: pointer; transition: 0.3s; display: flex; 
+            align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .btn-live { background: #1e293b; color: white; }
+        .btn-upload { background: var(--accent); color: white; }
+        .btn-clear { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+
+        /* Grid & Dark Cards */
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; }
+
+        .card { 
+            background: var(--card-bg); border-radius: 16px; overflow: hidden; 
+            transition: 0.4s; position: relative; color: white; border: 1px solid rgba(255,255,255,0.05);
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .viewport { background: #000; aspect-ratio: 4/3; position: relative; overflow: hidden; }
+        .viewport img, .viewport video { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Spinner Loader Overlay */
+        .loader-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(30, 41, 59, 0.9); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 100; transition: 0.3s;
+        }
+        .spinner {
+            width: 45px; height: 45px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { font-size: 0.7rem; margin-top: 15px; letter-spacing: 2px; color: #94a3b8; font-weight: 600; }
+
+        .scan-line {
+            width: 100%; height: 2px; background: var(--accent);
+            position: absolute; top: 0; left: 0; z-index: 10;
+            box-shadow: 0 0 15px var(--accent);
+            animation: scan 2s linear infinite;
+        }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+
+        .card-content { padding: 1.5rem; }
+        .status-badge { 
+            display: inline-block; padding: 0.4rem 1rem; border-radius: 50px; 
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 0.8rem; 
+        }
+        .status-pass { background: #dcfce7; color: #166534; }
+        .status-fail { background: #fee2e2; color: #991b1b; }
+
+        .defect-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: #fff; }
+        .briefing { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; height: 3rem; overflow: hidden; }
+        
+        .confidence-mini { 
+            margin-top: 1.5rem; font-size: 0.75rem; font-weight: 800; 
+            color: #60a5fa; display: flex; justify-content: space-between; 
+            padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); 
+        }
+        
+        #live-view-container { grid-column: 1 / -1; display: none; margin-bottom: 3rem; }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            header { justify-content: center; padding: 1rem; }
+            .logo { width: 100%; text-align: center; }
+            .category-tabs { width: 100%; justify-content: flex-start; }
+            .action-bar { gap: 10px; }
+            .btn { flex: 1; padding: 0.8rem 1rem; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">FIS</div>
+    <div class="nav-container">
+        <div class="category-tabs" id="navTabs">
+            <div class="tab active" data-cat="all" onclick="filterGallery('all')">ALL</div>
+            <div class="tab" data-cat="dyeing" onclick="filterGallery('dyeing')">DYEING</div>
+            <div class="tab" data-cat="weaving" onclick="filterGallery('weaving')">WEAVING</div>
+            <div class="tab" data-cat="knitting" onclick="filterGallery('knitting')">KNITTING</div>
+            <div class="tab" data-cat="good" onclick="filterGallery('good')">GOOD</div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="action-bar">
+        <button class="btn btn-live" onclick="toggleCamera()">▶ START SCANNER</button>
+        <button class="btn btn-upload" onclick="document.getElementById('fileInput').click()">📂 BATCH UPLOAD</button>
+        <button class="btn btn-clear" id="clearBtn" onclick="clearGrid()" style="display:none">🗑️ CLEAR SESSION</button>
+        <input type="file" id="fileInput" hidden multiple onchange="handleMultipleUploads(this)">
+    </div>
+
+    <div id="live-view-container" class="card">
+        <div class="viewport">
+            <div class="scan-line"></div>
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas" style="display:none"></canvas>
+        </div>
+        <div class="card-content">
+            <div id="live-status" class="status-badge status-pass">SCANNING...</div>
+            <div id="live-defect" class="defect-title">READY</div>
+            <p id="live-brief" class="briefing">Real-time inspection active.</p>
+        </div>
+    </div>
+
+    <div id="resultsGrid" class="results-grid"></div>
+</div>
+
+<script>
+    let isStreaming = false;
+    let currentCategory = 'all';
+    const resultsGrid = document.getElementById('resultsGrid');
+    const liveView = document.getElementById('live-view-container');
+    const clearBtn = document.getElementById('clearBtn');
+    const video = document.getElementById('video');
+
+    function clearGrid() {
+        resultsGrid.innerHTML = '';
+        clearBtn.style.display = 'none';
+        stopCamera();
+    }
+
+    async function handleMultipleUploads(input) {
+        if (!input.files.length) return;
+        stopCamera();
+        clearBtn.style.display = 'flex';
+        
+        for (const file of input.files) {
+            const cardId = 'card-' + Math.random().toString(36).substr(2, 9);
+            createPlaceholder(cardId, file);
+            await processFile(file, cardId);
+        }
+    }
+
+    function createPlaceholder(id, file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const html = `
+                <div class="card" id="${id}" data-category="waiting">
+                    <div class="loader-overlay" id="loader-${id}">
+                        <div class="spinner"></div>
+                        <div class="loading-text">SCANNING IN PROGRESS...</div>
+                    </div>
+                    <div class="viewport">
+                        <img src="${e.target.result}">
+                    </div>
+                    <div class="card-content">
+                        <div class="status-badge" style="background:rgba(255,255,255,0.1)">QUEUED</div>
+                        <div class="defect-title">Syncing...</div>
+                        <p class="briefing">Processing sample data...</p>
+                    </div>
+                </div>`;
+            resultsGrid.insertAdjacentHTML('afterbegin', html);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async function processFile(file, cardId) {
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+            const res = await fetch('http://127.0.0.1:8000/api/analyze-frame', { method: 'POST', body: formData });
+            const data = await res.json();
+            
+            
+            setTimeout(() => {
+                updateCard(cardId, data);
+            }, 3000);
+            
+        } catch (e) {
+            const loader = document.getElementById(`loader-${cardId}`);
+            if(loader) loader.innerHTML = `<div class="loading-text" style="color:var(--red)">OFFLINE</div>`;
+        }
+    }
+
+    function updateCard(id, data) {
+        const card = document.getElementById(id);
+        const loader = document.getElementById(`loader-${id}`);
+        if (!card) return;
+
+        if(loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => loader.remove(), 300);
+        }
+
+        const isPass = data.status === 'PASS';
+        const defectCat = data.defect_type.toLowerCase();
+        card.setAttribute('data-category', isPass ? 'good' : defectCat);
+        
+        card.querySelector('.viewport img').src = data.image;
+        
+        card.querySelector('.card-content').innerHTML = `
+            <div class="status-badge ${isPass ? 'status-pass' : 'status-fail'}">${data.status}</div>
+            <div class="defect-title">${data.defect_type}</div>
+            <p class="briefing">${data.briefing}</p>
+            <div class="confidence-mini"><span>AI ACCURACY</span><span>${data.accuracy}%</span></div>
+        `;
+        filterGallery(currentCategory); 
+    }
+
+    function filterGallery(cat) {
+        currentCategory = cat;
+        document.querySelectorAll('.tab').forEach(t => {
+            t.classList.toggle('active', t.getAttribute('data-cat') === cat);
+        });
+        const cards = document.querySelectorAll('.results-grid .card');
+        cards.forEach(card => {
+            const cardCat = card.getAttribute('data-category');
+            if (cat === 'all' || cardCat === 'waiting') {
+                card.style.display = 'block';
+            } else {
+                card.style.display = (cardCat === cat) ? 'block' : 'none';
+            }
+        });
+    }
+
+    async function toggleCamera() {
+        if (!isStreaming) {
+            try {
+                const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = s;
+                liveView.style.display = 'block';
+                clearBtn.style.display = 'flex';
+                isStreaming = true;
+                processLive();
+            } catch (e) { alert("Camera access denied."); }
+        } else { stopCamera(); }
+    }
+
+    function stopCamera() {
+        if(video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
+        liveView.style.display = 'none';
+        isStreaming = false;
+    }
+
+    async function processLive() {
+        if (!isStreaming) return;
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        const b = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.8));
+        const fd = new FormData(); fd.append('file', b);
+        try {
+            const res = await fetch('http://127.0.0.1:8000/api/analyze-frame', { method: 'POST', body: fd });
+            const d = await res.json();
+            document.getElementById('live-status').innerText = d.status;
+            document.getElementById('live-status').className = 'status-badge ' + (d.status === 'PASS' ? 'status-pass' : 'status-fail');
+            document.getElementById('live-defect').innerText = d.defect_type;
+            document.getElementById('live-brief').innerText = d.briefing;
+        } catch (e) {}
+        setTimeout(processLive, 1000);
+    }
+</script>
+</body>
+</html>
+-->
