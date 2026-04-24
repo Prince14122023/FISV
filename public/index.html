@@ -7,269 +7,192 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --red: #ff4d4d; --green: #2ecc71; --bg: #f8fafc; 
-            --accent: #2563eb; --card-bg: #1e293b; --border: rgba(255,255,255,0.1);
+            --red: #ff4d4d; --green: #2ecc71; --bg: #f1f5f9; 
+            --accent: #2563eb; --card-bg: #ffffff; --dark-card: #1e293b;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Lexend', sans-serif; }
         body { background: var(--bg); color: #334155; overflow-x: hidden; min-height: 100vh; }
         
         /* Premium Header */
         header { 
-            background: var(--accent); padding: 0.8rem 2rem; 
+            background: var(--accent); padding: 0.8rem 1.5rem; 
             display: flex; justify-content: space-between; align-items: center; 
-            position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+            position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             color: white;
         }
-        .logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -1px; display: flex; align-items: center; }
-        .logo span { background: white; color: var(--accent); padding: 2px 8px; border-radius: 4px; margin-left: 8px; font-size: 0.75rem; }
+        .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -1px; }
+        .logo span { background: white; color: var(--accent); padding: 2px 8px; border-radius: 6px; margin-left: 5px; font-size: 0.8rem; }
 
-        /* Minimalist Hamburger Button */
-        .hamburger { 
-            display: none; width: 30px; height: 20px; 
-            flex-direction: column; justify-content: space-between; cursor: pointer; z-index: 1001;
-        }
-        .hamburger span { width: 100%; height: 2.5px; background: white; border-radius: 10px; transition: 0.4s; }
-
-        /* Navigation Desktop */
-        .category-tabs { display: flex; gap: 0.5rem; }
+        /* Navigation */
+        .category-tabs { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .category-tabs::-webkit-scrollbar { display: none; }
         .tab { 
-            padding: 0.5rem 1.2rem; font-size: 0.75rem; font-weight: 600; cursor: pointer; 
-            border-radius: 50px; transition: 0.3s; color: rgba(255,255,255,0.7); 
-            border: 1px solid rgba(255,255,255,0.1); white-space: nowrap;
+            padding: 0.5rem 1rem; font-size: 0.7rem; font-weight: 600; cursor: pointer; 
+            border-radius: 50px; transition: 0.3s; color: rgba(255,255,255,0.8); 
+            border: 1px solid rgba(255,255,255,0.2); white-space: nowrap;
         }
-        .tab:hover, .tab.active { background: white; color: var(--accent); border-color: white; }
+        .tab.active { background: white; color: var(--accent); }
 
-        /* Mobile View Fix */
-        @media (max-width: 850px) {
-            .hamburger { display: flex; }
-            .category-tabs { 
-                position: fixed; top: 0; right: -100%; width: 260px; height: 100vh; 
-                background: white; flex-direction: column; padding: 80px 20px; 
-                gap: 15px; transition: 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
-                box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 1000;
-            }
-            .category-tabs.open { right: 0; }
-            .category-tabs .tab { color: #1e293b; border: 1px solid #e2e8f0; text-align: center; }
-            .category-tabs .tab.active { background: var(--accent); color: white; }
-            
-            .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); background: #1e293b; }
-            .hamburger.open span:nth-child(2) { opacity: 0; }
-            .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(7px, -8px); background: #1e293b; }
-        }
-
-        /* --- HERO SLIDER (Superior Filling) --- */
-        .hero-section { width: 100%; position: relative; overflow: hidden; height: 400px; background: #000; }
-        .slider-container { display: flex; width: 100%; height: 100%; transition: 0.8s ease-in-out; }
+        /* Hero Slider */
+        .hero-section { width: 100%; position: relative; height: 350px; background: #000; overflow: hidden; }
+        .slider-container { display: flex; height: 100%; transition: 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
         .slide { min-width: 100%; height: 100%; position: relative; }
-        .slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
-        
-        .hero-content { 
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            text-align: center; color: white; width: 90%; z-index: 10;
-        }
-        .hero-content h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .hero-content p { font-size: 1rem; opacity: 0.9; font-weight: 300; letter-spacing: 1px; }
+        .slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+        .hero-content { position: absolute; bottom: 40px; left: 20px; color: white; z-index: 10; }
+        .hero-content h1 { font-size: 1.8rem; font-weight: 800; line-height: 1.1; }
 
-        @media (max-width: 768px) {
-            .hero-section { height: 280px; }
-            .hero-content h1 { font-size: 1.6rem; }
-            .hero-content p { font-size: 0.8rem; }
-        }
-
-        /* --- ACTION CARDS (Premium UI) --- */
-        .container { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+        /* Action Bar */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem 5rem; }
         .action-bar { 
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; 
-            margin-top: -50px; position: relative; z-index: 20; 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; 
+            margin-top: -40px; z-index: 20; position: relative;
         }
         .action-card { 
-            background: var(--card-bg); border-radius: 24px; padding: 2.5rem; 
-            cursor: pointer; transition: 0.4s; text-align: center; color: white;
-            border: 1px solid var(--border); box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            background: var(--dark-card); border-radius: 20px; padding: 1.5rem; 
+            cursor: pointer; transition: 0.3s; color: white; text-align: left;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .action-card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 20px 45px rgba(37, 99, 235, 0.3); }
-        .action-icon { font-size: 2.5rem; margin-bottom: 1rem; color: var(--accent); }
-        .action-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; }
-        .action-desc { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; }
+        .action-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .action-icon { font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--accent); }
 
-        @media (max-width: 768px) { .action-bar { grid-template-columns: 1fr; margin-top: -30px; } }
-
-        /* Results Grid & Dark Cards */
-        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; margin-top: 4rem; }
-        .card { background: var(--card-bg); border-radius: 16px; overflow: hidden; position: relative; color: white; border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; }
+        /* Results Grid */
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+        .card { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #e2e8f0; }
         .card.is-hidden { display: none; }
-
-        .loader-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30, 41, 59, 0.95); display: flex; align-items: center; justify-content: center; z-index: 100; }
-        .spinner { width: 45px; height: 45px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .viewport { background: #000; aspect-ratio: 4/3; }
+        .viewport { background: #eee; aspect-ratio: 4/3; position: relative; }
         .viewport img { width: 100%; height: 100%; object-fit: cover; }
-        .card-content { padding: 1.5rem; }
-        .status-badge { display: inline-block; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 0.8rem; }
-        .status-pass { background: #dcfce7; color: #166534; }
-        .status-fail { background: #fee2e2; color: #991b1b; }
-        .confidence-mini { margin-top: 1.5rem; font-size: 0.75rem; font-weight: 800; color: #60a5fa; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; }
         
-        #clearBtn { margin: 2rem auto; display: none; background: #fee2e2; color: #991b1b; padding: 0.8rem 2rem; border-radius: 10px; border: none; font-weight: 800; cursor: pointer; }
+        .card-content { padding: 1.2rem; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 50px; font-size: 0.65rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .status-pass { background: #dcfce7; color: #15803d; }
+        .status-fail { background: #fee2e2; color: #b91c1c; }
+        .defect-title { font-weight: 800; font-size: 1rem; color: #1e293b; margin-bottom: 0.3rem; }
+        .briefing-text { font-size: 0.75rem; color: #64748b; line-height: 1.4; }
+        
+        .confidence-mini { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 700; color: var(--accent); }
+
+        @media (max-width: 600px) {
+            .hero-section { height: 250px; }
+            .hero-content h1 { font-size: 1.4rem; }
+            header { padding: 0.8rem 1rem; }
+            .category-tabs { margin-top: 10px; }
+        }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">FIS <span>PRO</span></div>
-    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-        <span></span><span></span><span></span>
-    </div>
     <div class="category-tabs" id="navTabs">
-        <div class="tab active" data-cat="all" onclick="filterGallery('all')">ALL ASSETS</div>
-        <div class="tab" data-cat="dyeing" onclick="filterGallery('dyeing')">DYEING</div>
-        <div class="tab" data-cat="weaving" onclick="filterGallery('weaving')">WEAVING</div>
-        <div class="tab" data-cat="knitting" onclick="filterGallery('knitting')">KNITTING</div>
-        <div class="tab" data-cat="good" onclick="filterGallery('good')">OPTIMAL (GOOD)</div>
+        <div class="tab active" data-cat="all" onclick="filterGallery('all')">ALL</div>
+        <div class="tab" data-cat="knot" onclick="filterGallery('knot')">KNOTS</div>
+        <div class="tab" data-cat="warp" onclick="filterGallery('warp')">WARP</div>
+        <div class="tab" data-cat="hole" onclick="filterGallery('hole')">HOLES</div>
+        <div class="tab" data-cat="good" onclick="filterGallery('good')">OPTIMAL</div>
     </div>
 </header>
 
 <div class="hero-section">
     <div class="slider-container" id="slider">
         <div class="slide">
-            <img src="assets/bg1.png" alt="Fabric Pathology Scan">
-            <div class="hero-content">
-                <h1>Autonomous Fabric Pathological Scanner</h1>
-                <p>Non-Destructive Testing (NDT) Approach</p>
-            </div>
+            <img src="https://images.unsplash.com/photo-1558273109-60434068ec39?auto=format&fit=crop&q=80" alt="Fabric">
+            <div class="hero-content"><h1>Autonomous Fabric Pathological Scanner</h1></div>
         </div>
         <div class="slide">
-            <img src="assets/bg2.png" alt="Surface Integrity">
-            <div class="hero-content">
-                <h1>ZERO DEFECT MANUFACTURING</h1>
-                <p>Ensuring 100% Surface Uniformity & Material Integrity</p>
-            </div>
-        </div>
-        <div class="slide">
-            <img src="assets/bg3.png" alt="Textile Audit">
-            <div class="hero-content">
-                <h1>SMART TEXTILE AUDIT</h1>
-                <p>Real-time Detection of Dyeing, Weaving & Knitting Flaws</p>
-            </div>
+            <img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&q=80" alt="Weave">
+            <div class="hero-content"><h1>Real-time Surface Integrity Audit</h1></div>
         </div>
     </div>
 </div>
 
 <div class="container">
     <div class="action-bar">
-        <div class="action-card" onclick="alert('Camera integration active in production')">
-            <div class="action-icon">▶</div>
-            <div class="action-title">START LIVE SCANNER</div>
-            <div class="action-desc">Point your industrial camera at material for real-time AI scanning.</div>
-        </div>
         <div class="action-card" onclick="document.getElementById('fileInput').click()">
-            <div class="action-icon">📂</div>
-            <div class="action-title">BATCH UPLOAD</div>
-            <div class="action-desc">Upload folders or multiple fabric samples for an automated deep audit.</div>
+            <div class="action-icon">📸</div>
+            <div class="action-title">SCAN MATERIAL</div>
+            <p style="font-size: 0.75rem; opacity: 0.7;">Upload fabric images for AI defect analysis</p>
         </div>
-        <input type="file" id="fileInput" hidden multiple onchange="handleMultipleUploads(this)">
+        <input type="file" id="fileInput" hidden multiple onchange="handleUploads(this)">
     </div>
 
     <div id="resultsGrid" class="results-grid"></div>
-    <div style="text-align:center"><button id="clearBtn" onclick="location.reload()">🗑️ CLEAR ALL RESULTS</button></div>
+    <div style="text-align:center; margin-top: 2rem;">
+        <button id="clearBtn" onclick="location.reload()" style="display:none; background:none; border:none; color:#b91c1c; font-weight:800; cursor:pointer; font-size:0.8rem;">🗑️ CLEAR AUDIT LOG</button>
+    </div>
 </div>
 
 <script>
     // Slider Logic
-    let slideIdx = 0;
-    const slider = document.getElementById('slider');
+    let idx = 0;
     setInterval(() => {
-        slideIdx = (slideIdx + 1) % 3;
-        slider.style.transform = `translateX(-${slideIdx * 100}%)`;
-    }, 4500);
+        idx = (idx + 1) % 2;
+        document.getElementById('slider').style.transform = `translateX(-${idx * 100}%)`;
+    }, 4000);
 
-    let currentCategory = 'all';
-    const resultsGrid = document.getElementById('resultsGrid');
-
-    function toggleMenu() {
-        document.getElementById('navTabs').classList.toggle('open');
-        document.getElementById('hamburger').classList.toggle('open');
-    }
-
-    async function handleMultipleUploads(input) {
+    async function handleUploads(input) {
         if (!input.files.length) return;
-        document.getElementById('clearBtn').style.display = 'block';
+        document.getElementById('clearBtn').style.display = 'inline-block';
+        
         for (const file of input.files) {
-            const cardId = 'card-' + Math.random().toString(36).substr(2, 9);
-            const path = (file.webkitRelativePath || file.name).toLowerCase();
-            let initialCat = "dyeing";
-            if (path.includes('weaving')) initialCat = 'weaving';
-            else if (path.includes('knitting')) initialCat = 'knitting';
-            else if (path.includes('good')) initialCat = 'good';
-
-            createPlaceholder(cardId, file, initialCat);
-            await processFile(file, cardId, initialCat);
+            const cardId = 'c-' + Math.random().toString(36).substr(2, 5);
+            addPlaceholder(cardId, file);
+            await uploadFile(file, cardId);
         }
     }
 
-    function createPlaceholder(id, file, cat) {
+    function addPlaceholder(id, file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-            const html = `<div class="card" id="${id}" data-category="${cat}">
-                <div class="loader-overlay" id="loader-${id}"><div class="spinner"></div></div>
+            const html = `<div class="card" id="${id}" data-category="all">
                 <div class="viewport"><img src="${e.target.result}"></div>
                 <div class="card-content">
-                    <div class="status-badge" style="background:rgba(255,255,255,0.1)">SYNCING</div>
-                    <div class="defect-title">AI Processing...</div>
-                    <p style="font-size:0.8rem; color:#94a3b8">Scanning material patterns...</p>
+                    <div class="status-badge" style="background:#f1f5f9; color:#64748b;">ANALYZING...</div>
+                    <div class="defect-title">Processing AI...</div>
+                    <p class="briefing-text">The system is scanning for structural breaches and density anomalies.</p>
                 </div>
             </div>`;
-            resultsGrid.insertAdjacentHTML('afterbegin', html);
-            filterGallery(currentCategory);
+            document.getElementById('resultsGrid').insertAdjacentHTML('afterbegin', html);
         };
         reader.readAsDataURL(file);
     }
 
-    async function processFile(file, cardId, initialCat) {
+    async function uploadFile(file, id) {
         const fd = new FormData(); fd.append('file', file);
         try {
             const res = await fetch('https://fisv.vercel.app/api/analyze-frame', { method: 'POST', body: fd });
             const data = await res.json();
-            setTimeout(() => {
-                const card = document.getElementById(cardId);
-                const loader = document.getElementById(`loader-${cardId}`);
-                if(loader) loader.remove();
-                
-                const isPass = data.status === 'PASS';
-                const dTitle = data.defect_type.toLowerCase();
-                const bText = data.briefing.toLowerCase();
+            
+            const card = document.getElementById(id);
+            const isPass = data.status === 'PASS';
+            
+            // Map categories based on results
+            let cat = 'good';
+            if (!isPass) {
+                if (data.defect_type.includes('KNOT')) cat = 'knot';
+                else if (data.defect_type.includes('WARP')) cat = 'warp';
+                else if (data.defect_type.includes('HOLE')) cat = 'hole';
+            }
 
-                let finalCat = initialCat;
-                if (isPass) finalCat = 'good';
-                else {
-                    if (bText.includes('hole') || dTitle.includes('knitting')) finalCat = 'knitting';
-                    else if (bText.includes('pick') || dTitle.includes('weaving')) finalCat = 'weaving';
-                    else finalCat = 'dyeing';
-                }
-
-                card.setAttribute('data-category', finalCat);
-                card.querySelector('.status-badge').className = `status-badge ${isPass ? 'status-pass' : 'status-fail'}`;
-                card.querySelector('.status-badge').innerText = data.status;
-                card.querySelector('.defect-title').innerText = data.defect_type;
-                card.querySelector('.card-content').insertAdjacentHTML('beforeend', `<div class="confidence-mini"><span>ACCURACY</span><span>${data.accuracy}%</span></div>`);
-                filterGallery(currentCategory);
-            }, 1800);
-        } catch (e) {}
+            card.setAttribute('data-category', cat);
+            card.querySelector('.viewport img').src = data.image || card.querySelector('.viewport img').src;
+            card.querySelector('.status-badge').className = `status-badge ${isPass ? 'status-pass' : 'status-fail'}`;
+            card.querySelector('.status-badge').innerText = data.status;
+            card.querySelector('.defect-title').innerText = data.defect_type;
+            card.querySelector('.briefing-text').innerText = data.briefing;
+            card.querySelector('.card-content').insertAdjacentHTML('beforeend', 
+                `<div class="confidence-mini"><span>ACCURACY</span><span>${data.accuracy}%</span></div>`);
+            
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     function filterGallery(cat) {
-        currentCategory = cat;
-        document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.getAttribute('data-cat') === cat));
-        document.querySelectorAll('.card').forEach(card => {
-            const cardCat = card.getAttribute('data-category');
-            if (cat === 'all' || cardCat === card) card.classList.remove('is-hidden');
-            else if (cardCat === cat) card.classList.remove('is-hidden');
-            else card.classList.add('is-hidden');
+        document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
+        document.querySelectorAll('.card').forEach(c => {
+            c.classList.toggle('is-hidden', cat !== 'all' && c.dataset.category !== cat);
         });
-        if (window.innerWidth < 850 && document.getElementById('hamburger').classList.contains('open')) toggleMenu();
     }
 </script>
 </body>
 </html>
-

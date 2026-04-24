@@ -5,29 +5,50 @@ import os
 import sys
 
 def start_fis_system():
-    # 1. HTML file ka local path nikalna
-    current_dir = os.getcwd()
-    html_path = os.path.join(current_dir, "public", "index.html")
+    # 1. Base Directory Setup (ISM Patna Report Format Standard)
+    # Taaki script kahin se bhi chale, path sahi pakde
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    html_path = os.path.join(base_dir, "public", "index.html")
     
-    print("🌌 Starting FIS (Fabric Inspection System) PRO Engine...")
-    print("🛠️  Initializing 13-Defect Logic & Ultra-Modern UI...")
-
-    # 2. Browser mein dashboard kholna (2 sec delay ke saath)
-    # Taaki backend ko initialize hone ka time mile
+    print("\n" + "="*50)
+    print("🌌 FIS PRO (Fabric Inspection System) | INDUSTRIAL ENGINE")
+    print("="*50)
+    print("🛠️  Mode: Real-Image Pathological Scanning (Knot/Warp/Hole)")
+    print("🚀 Version: 2.0 (Stable Production)")
+    
+    # 2. Local Dashboard Launch
     if os.path.exists(html_path):
-        print(f"🚀 Launching Industrial Dashboard: {html_path}")
+        print(f"📡 Status: Launching Local GUI...")
+        # Local file path formatting for browser
         webbrowser.open(f'file:///{html_path}', new=2)
     else:
-        print("❌ Error: public/index.html nahi mili! Path check karein.")
+        # Agar local file nahi milti toh online wala link khol dega backup ke liye
+        print("⚠️  Warning: Local GUI not found. Launching Cloud Dashboard...")
+        webbrowser.open('https://fisv.vercel.app', new=2)
 
-    # 3. FastAPI Server (Uvicorn) start karna
-    # Hum 'api.main:app' use kar rahe hain kyunki file api folder mein hai
+    # 3. Port Check & FastAPI Initialization
+    print("⚙️  Status: Initializing FastAPI Backend on Port 8000...")
+    time.sleep(1.5) # Smooth transition delay
+
     try:
-        # Windows par 'py', Mac/Linux par 'python3'
-        cmd = "py" if sys.platform == "win32" else "python3"
-        subprocess.run([cmd, "-m", "uvicorn", "api.main:app", "--reload", "--port", "8000"], shell=True)
+        # Windows/Mac/Linux cross-platform command
+        python_cmd = sys.executable  # Automatically gets the correct python path
+        
+        # Running Uvicorn as a module
+        subprocess.run([
+            python_cmd, "-m", "uvicorn", 
+            "api.main:app", 
+            "--host", "0.0.0.0", 
+            "--port", "8000", 
+            "--reload"
+        ])
+        
     except KeyboardInterrupt:
-        print("\n🛑 FIS PRO Engine gracefully stopped.")
+        print("\n" + "="*50)
+        print("🛑 FIS PRO Engine gracefully stopped by User.")
+        print("="*50)
+    except Exception as e:
+        print(f"❌ Critical Fault: {str(e)}")
 
 if __name__ == "__main__":
     start_fis_system()
